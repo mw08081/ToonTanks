@@ -9,7 +9,7 @@
 ATank::ATank()
 {
 	SpringArm = CreateDefaultSubobject<USpringArmComponent>(TEXT("Spring Arm"));
-	SpringArm->SetupAttachment(RootComponent);
+	SpringArm->SetupAttachment(BaseMesh);
 
 	CamComp = CreateDefaultSubobject<UCameraComponent>(TEXT("Camera Comp"));
 	CamComp->SetupAttachment(SpringArm);
@@ -25,6 +25,8 @@ void ATank::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent)
 	PlayerInputComponent->BindAxis(TEXT("LeftCaterpillar"), this, &ATank::SetLeftCaterpillarValByInput);
 }
 
+#pragma region Move Function
+#pragma region legacy Moving Mechanism 
 void ATank::Move(float value)
 {
 	//UE_LOG(LogTemp, Display, TEXT("%f"), value);
@@ -37,6 +39,9 @@ void ATank::Turn(float value)
 	yawRot.Yaw = value * rotSpeed * UGameplayStatics::GetWorldDeltaSeconds(this);
 	AddActorLocalRotation(yawRot, true);
 }
+#pragma endregion
+
+#pragma region Moving Mechanism (using Tick)
 
 void ATank::SetRightCaterpillarValByInput(float value)
 {
@@ -48,29 +53,86 @@ void ATank::SetLeftCaterpillarValByInput(float value)
 	leftCaterpillarVal = value;
 }
 
+void ATank::SetPivotToTurn(bool bResetPivot, bool bLeftTurn)
+{
+	if (bResetPivot == true) {
+
+	}
+	return;
+
+	if (bIsCenterPivot == true) {
+		bIsCenterPivot = false;	//더이상 피벗조정이 일어나지않도록
+
+		FVector pivotLocation = FVector::ZeroVector;
+		if (bLeftTurn == true) {
+			pivotLocation = FVector(0, -45, 0);
+		}
+		else {
+			pivotLocation = FVector(0, 45, 0);
+		}
+
+		AddActorLocalOffset(pivotLocation);
+		BaseMesh->SetRelativeLocation(BaseMesh->GetRelativeLocation() + pivotLocation * -1);
+	}
+}
+
 void ATank::Moving(float dt)
 {
 	if (leftCaterpillarVal == 0 || rightCaterpillarVal == 0) {
+		if (leftCaterpillarVal == 0) {
+			bIsCenterPivot = true;
 
-	}
-	else {
-		if (leftCaterpillarVal > 0 && rightCaterpillarVal > 0 ||
-			leftCaterpillarVal < 0 && rightCaterpillarVal < 0) {
-			forwardVec.X = leftCaterpillarVal * moveSpeed * dt;
-			AddActorLocalOffset(forwardVec, true);
+			//turn left (↖ || ↙)
+			SetPivotToTurn(false, true);
+			MovingRotation(rightCaterpillarVal * -1, dt);
+
+			//조금씩 앞으로 가면서 회전을 위함(현실고증)
+			MovingLocation(rightCaterpillarVal, dt);
 		}
 		else {
-			yawRot.Yaw = leftCaterpillarVal * rotSpeed * dt;
-			AddActorLocalRotation(yawRot, true);
+			bIsCenterPivot = true;
+
+			//turn right (↗ || ↘)
+			SetPivotToTurn(false, false);
+			MovingRotation(leftCaterpillarVal, dt);
+
+			//조금씩 앞으로 가면서 회전을 위함(현실고증)
+			MovingLocation(leftCaterpillarVal, dt);
+		}
+	}
+	else {
+		bIsCenterPivot = true;
+
+		if (leftCaterpillarVal > 0 && rightCaterpillarVal > 0 ||
+			leftCaterpillarVal < 0 && rightCaterpillarVal < 0) {
+			MovingLocation(leftCaterpillarVal, dt);
+		}
+		else {
+			MovingRotation(leftCaterpillarVal, dt);
 		}
 	}
 }
 
+void ATank::MovingLocation(float val, float dt)
+{
+	forwardVec.X = val * moveSpeed * dt;
+	AddActorLocalOffset(forwardVec, true);
+}
+
+void ATank::MovingRotation(float val, float dt)
+{
+	yawRot.Yaw = val * rotSpeed * dt;
+	AddActorLocalRotation(yawRot, true);
+}
+#pragma endregion
+#pragma endregion
+
+
+
 void ATank::Tick(float DeltaTime)
 {
-	if (leftCaterpillarVal != 0 && rightCaterpillarVal != 0) {
+	if (leftCaterpillarVal != 0 || rightCaterpillarVal != 0) {
 		Moving(DeltaTime);
 	}
-
 }
 

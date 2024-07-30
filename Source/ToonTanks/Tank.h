@@ -40,6 +40,7 @@ private:
 public:
 
 private:
+	bool bIsCenterPivot = true;
 	float rightCaterpillarVal = 0.f;
 	float leftCaterpillarVal = 0.f;
 	FVector forwardVec = FVector::ZeroVector;
@@ -50,11 +51,15 @@ public :
 	// Called to bind functionality to input
 	virtual void SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent) override;
 
+	//Moving Function
 	void Move(float value);
 	void Turn(float value);
 	void SetRightCaterpillarValByInput(float value);
 	void SetLeftCaterpillarValByInput(float value);
+	void SetPivotToTurn(bool bResetPivot, bool bLeftTurn);
 	void Moving(float dt);
+	void MovingLocation(float val, float dt);
+	void MovingRotation(float val, float dt);
 
 //private:
 };
