@@ -15,7 +15,6 @@ ATank::ATank()
 	CamComp->SetupAttachment(SpringArm);
 }
 
-
 void ATank::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent)
 {
 	Super::SetupPlayerInputComponent(PlayerInputComponent);
@@ -24,6 +23,25 @@ void ATank::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent)
 	PlayerInputComponent->BindAxis(TEXT("RightCaterpillar"), this, &ATank::SetRightCaterpillarValByInput);
 	PlayerInputComponent->BindAxis(TEXT("LeftCaterpillar"), this, &ATank::SetLeftCaterpillarValByInput);
 }
+
+void ATank::BeginPlay()
+{
+	Super::BeginPlay();
+
+	PlayerControllerRef = Cast<APlayerController>(GetController());
+}
+
+void ATank::Tick(float DeltaTime)
+{
+	if (leftCaterpillarVal != 0 || rightCaterpillarVal != 0) {
+		Moving(DeltaTime);
+	}
+
+	if (PlayerControllerRef) {
+		ControllTurret();
+	}
+}
+
 
 #pragma region Move Function
 #pragma region legacy Moving Mechanism 
@@ -127,12 +145,18 @@ void ATank::MovingRotation(float val, float dt)
 #pragma endregion
 #pragma endregion
 
-
-
-void ATank::Tick(float DeltaTime)
+void ATank::ControllTurret()
 {
-	if (leftCaterpillarVal != 0 || rightCaterpillarVal != 0) {
-		Moving(DeltaTime);
+	FHitResult hitResult;
+	PlayerControllerRef->GetHitResultUnderCursor(ECC_Visibility, false, hitResult);
+	if (hitResult.bBlockingHit) {
+		DrawDebugSphere(GetWorld(), hitResult.ImpactPoint, 25.f, 24, FColor::Red);
+
+		FVector CameraLocation = PlayerControllerRef->PlayerCameraManager->GetCameraLocation();
+		FVector CameraForwardVector = PlayerControllerRef->PlayerCameraManager->GetCameraRotation().Vector();
+
+
+		// 디버그 라인을 그립니다.
+		DrawDebugLine(GetWorld(), CameraLocation, hitResult.ImpactPoint, FColor::Green);
 	}
 }
-

@@ -17,6 +17,9 @@ class TOONTANKS_API ATank : public ABasePawn
 public :
 	ATank();
 	virtual void Tick(float DeltaTime) override;
+protected:
+// Called when the game starts or when spawned
+	virtual void BeginPlay() override;
 
 //Components
 private:
@@ -40,11 +43,13 @@ private:
 public:
 
 private:
+	APlayerController* PlayerControllerRef;
+
+	FVector forwardVec = FVector::ZeroVector;
+	FRotator yawRot = FRotator::ZeroRotator;
 	bool bIsCenterPivot = true;
 	float rightCaterpillarVal = 0.f;
 	float leftCaterpillarVal = 0.f;
-	FVector forwardVec = FVector::ZeroVector;
-	FRotator yawRot = FRotator::ZeroRotator;
 
 //Function
 public :
@@ -56,10 +61,14 @@ public :
 	void Turn(float value);
 	void SetRightCaterpillarValByInput(float value);
 	void SetLeftCaterpillarValByInput(float value);
+
+private:
 	void SetPivotToTurn(bool bResetPivot, bool bLeftTurn);
 	void Moving(float dt);
 	void MovingLocation(float val, float dt);
 	void MovingRotation(float val, float dt);
+
+	void ControllTurret();
 
 //private:
 };
