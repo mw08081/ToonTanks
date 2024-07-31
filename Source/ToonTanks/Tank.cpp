@@ -152,11 +152,22 @@ void ATank::ControllTurret()
 	if (hitResult.bBlockingHit) {
 		DrawDebugSphere(GetWorld(), hitResult.ImpactPoint, 25.f, 24, FColor::Red);
 
-		FVector CameraLocation = PlayerControllerRef->PlayerCameraManager->GetCameraLocation();
-		FVector CameraForwardVector = PlayerControllerRef->PlayerCameraManager->GetCameraRotation().Vector();
+		//FVector CameraLocation = PlayerControllerRef->PlayerCameraManager->GetCameraLocation();
+		//FVector CameraForwardVector = PlayerControllerRef->PlayerCameraManager->GetCameraRotation().Vector();
+
+		//// 디버그 라인을 그립니다.
+		//DrawDebugLine(GetWorld(), CameraLocation, hitResult.ImpactPoint, FColor::Green);
+		FVector turret2HitPoint = hitResult.ImpactPoint - GetActorLocation();
+		FRotator turretRot = turret2HitPoint.Rotation();
+		turretRot.Roll = turretRot.Pitch = 0;
 
 
-		// 디버그 라인을 그립니다.
-		DrawDebugLine(GetWorld(), CameraLocation, hitResult.ImpactPoint, FColor::Green);
+		TurretMesh->SetWorldRotation(
+			FMath::RInterpTo(
+				TurretMesh->GetComponentRotation(), 
+				turretRot, 
+				UGameplayStatics::GetWorldDeltaSeconds(this), 
+				10.f)
+		);
 	}
 }
