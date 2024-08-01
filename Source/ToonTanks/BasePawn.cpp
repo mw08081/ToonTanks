@@ -4,6 +4,7 @@
 #include "BasePawn.h"
 #include "Components/CapsuleComponent.h"
 #include "Components/StaticMeshComponent.h"
+#include "Kismet/GameplayStatics.h"
 
 // Sets default values
 ABasePawn::ABasePawn()
@@ -29,7 +30,17 @@ ABasePawn::ABasePawn()
 void ABasePawn::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
+}
 
+void ABasePawn::RotateToTarget(FRotator targetLocation)
+{
+	TurretMesh->SetWorldRotation(
+		FMath::RInterpTo(
+			TurretMesh->GetComponentRotation(),
+			targetLocation,
+			UGameplayStatics::GetWorldDeltaSeconds(this),
+			10.f)
+	);
 }
 
 

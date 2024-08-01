@@ -33,6 +33,7 @@ void ATank::BeginPlay()
 
 void ATank::Tick(float DeltaTime)
 {
+	Super::Tick(DeltaTime);
 	if (leftCaterpillarVal != 0 || rightCaterpillarVal != 0) {
 		Moving(DeltaTime);
 	}
@@ -159,15 +160,8 @@ void ATank::ControllTurret()
 		//DrawDebugLine(GetWorld(), CameraLocation, hitResult.ImpactPoint, FColor::Green);
 		FVector turret2HitPoint = hitResult.ImpactPoint - GetActorLocation();
 		FRotator turretRot = turret2HitPoint.Rotation();
-		turretRot.Roll = turretRot.Pitch = 0;
+		turretRot.Roll = turretRot.Pitch = 0; 
 
-
-		TurretMesh->SetWorldRotation(
-			FMath::RInterpTo(
-				TurretMesh->GetComponentRotation(), 
-				turretRot, 
-				UGameplayStatics::GetWorldDeltaSeconds(this), 
-				10.f)
-		);
+		RotateToTarget(turretRot);
 	}
 }
