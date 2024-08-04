@@ -23,9 +23,17 @@ protected:
 
 public:
 private:
-	class ATank* target;
+	class ATank* target = nullptr;
 	UPROPERTY(EditAnywhere)
 		float TowerRange = 1000.f;
+
+	bool canFire;
+
+	FTimerHandle FireRateTimerHandle;
+	float FireInterval = 2.f;
+
 private:
+	bool CheckFireCondition();
 	void AimToTarget();
+	void OnFire();
 };

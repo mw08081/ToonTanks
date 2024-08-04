@@ -22,6 +22,8 @@ void ATank::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent)
 	//PlayerInputComponent->BindAxis(TEXT("Turn"), this, &ATank::Turn);
 	PlayerInputComponent->BindAxis(TEXT("RightCaterpillar"), this, &ATank::SetRightCaterpillarValByInput);
 	PlayerInputComponent->BindAxis(TEXT("LeftCaterpillar"), this, &ATank::SetLeftCaterpillarValByInput);
+
+	PlayerInputComponent->BindAction(TEXT("Fire"), IE_Pressed, this, &ATank::Fire);
 }
 
 void ATank::BeginPlay()
@@ -33,6 +35,9 @@ void ATank::BeginPlay()
 
 void ATank::Tick(float DeltaTime)
 {
+	UGameplayStatics::GetPlayerController(this, 0);
+	APlayerController* PlayerController = UGameplayStatics::GetPlayerController(GetWorld(), 0);
+
 	Super::Tick(DeltaTime);
 	if (leftCaterpillarVal != 0 || rightCaterpillarVal != 0) {
 		Moving(DeltaTime);
@@ -80,7 +85,7 @@ void ATank::SetPivotToTurn(bool bResetPivot, bool bLeftTurn)
 	return;
 
 	if (bIsCenterPivot == true) {
-		bIsCenterPivot = false;	//´õÀÌ»ó ÇÇ¹şÁ¶Á¤ÀÌ ÀÏ¾î³ªÁö¾Êµµ·Ï
+		bIsCenterPivot = false;	//í•œë²ˆë§Œ ì‹¤í–‰
 
 		FVector pivotLocation = FVector::ZeroVector;
 		if (bLeftTurn == true) {
@@ -101,21 +106,21 @@ void ATank::Moving(float dt)
 		if (leftCaterpillarVal == 0) {
 			bIsCenterPivot = true;
 
-			//turn left (¢Ø || ¢×)
+			//turn left (â†– || â†™)
 			SetPivotToTurn(false, true);
 			MovingRotation(rightCaterpillarVal * -1, dt);
 
-			//Á¶±İ¾¿ ¾ÕÀ¸·Î °¡¸é¼­ È¸ÀüÀ» À§ÇÔ(Çö½Ç°íÁõ)
+			// ì¡°ê¸ˆì”© ì•ìœ¼ë¡œ ê°€ë©´ì„œ... í˜„ì‹¤ê³ ì¦
 			MovingLocation(rightCaterpillarVal, dt);
 		}
 		else {
 			bIsCenterPivot = true;
 
-			//turn right (¢Ö || ¢Ù)
+			//turn right (â†— || â†˜)
 			SetPivotToTurn(false, false);
 			MovingRotation(leftCaterpillarVal, dt);
 
-			//Á¶±İ¾¿ ¾ÕÀ¸·Î °¡¸é¼­ È¸ÀüÀ» À§ÇÔ(Çö½Ç°íÁõ)
+			// ì¡°ê¸ˆì”© ì•ìœ¼ë¡œ ê°€ë©´ì„œ... í˜„ì‹¤ê³ ì¦
 			MovingLocation(leftCaterpillarVal, dt);
 		}
 	}
@@ -156,7 +161,7 @@ void ATank::ControllTurret()
 		//FVector CameraLocation = PlayerControllerRef->PlayerCameraManager->GetCameraLocation();
 		//FVector CameraForwardVector = PlayerControllerRef->PlayerCameraManager->GetCameraRotation().Vector();
 
-		//// µğ¹ö±× ¶óÀÎÀ» ±×¸³´Ï´Ù.
+		//// ë””ë²„ê·¸ ë¼ì¸ ê·¸ë¦¬ê¸°
 		//DrawDebugLine(GetWorld(), CameraLocation, hitResult.ImpactPoint, FColor::Green);
 		FVector turret2HitPoint = hitResult.ImpactPoint - GetActorLocation();
 		FRotator turretRot = turret2HitPoint.Rotation();

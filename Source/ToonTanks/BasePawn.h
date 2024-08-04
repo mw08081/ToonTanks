@@ -15,7 +15,8 @@ public:
 	// Sets default values for this pawn's properties
 	ABasePawn();
 
-
+	UPROPERTY(EditDefaultsOnly, Category = "Combat")
+	TSubclassOf<class AProjectile> ProjectileClass;
 protected:
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Components", meta = (AllowPrivateAccess = "true"))
 	class UCapsuleComponent* CapsuleComp;
@@ -26,7 +27,7 @@ protected:
 	UStaticMeshComponent* TurretMesh;
 
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Components", meta = (AllowPrivateAccess = "true"))
-	USceneComponent* ProjectileSpawnLocation;
+	USceneComponent* ProjectileSpawnLocationComp;
 
 public:	
 	// Called every frame
@@ -34,5 +35,6 @@ public:
 
 protected :
 	void RotateToTarget(FRotator targetLocation);
+	void Fire();
 
 };
