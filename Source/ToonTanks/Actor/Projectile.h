@@ -28,6 +28,8 @@ private:
 public:
 private:
 	//code variable
+	UPROPERTY(EditAnywhere)
+	float Damage = 50.f;
 
 private:
 	//function

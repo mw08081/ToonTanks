@@ -13,16 +13,26 @@ class TOONTANKS_API UHealthComponent : public UActorComponent
 	GENERATED_BODY()
 
 public:	
-	// Sets default values for this component's properties
 	UHealthComponent();
-
 protected:
-	// Called when the game starts
 	virtual void BeginPlay() override;
-
 public:	
-	// Called every frame
 	virtual void TickComponent(float DeltaTime, ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction) override;
 
-		
+//Components
+public:
+private:
+	
+//Variable
+public:
+private:
+	UPROPERTY(EditAnywhere)
+	float MaxHealth = 100.f;
+	float Health = 0.f;
+
+//function region
+public:
+private:
+	UFUNCTION()
+	void TakenDamage(AActor* DamagedActor, float Damage, const UDamageType* DamageType, class AController* Instigator, AActor* DamageCauser);
 };

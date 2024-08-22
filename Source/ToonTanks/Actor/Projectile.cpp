@@ -4,6 +4,8 @@
 #include "Projectile.h"
 #include "Components/StaticMeshComponent.h"
 #include "GameFramework/ProjectileMovementComponent.h"
+#include "Kismet/GameplayStatics.h"
+#include "GameFramework/DamageType.h"
 
 // Sets default values
 AProjectile::AProjectile()
@@ -34,6 +36,17 @@ void AProjectile::Tick(float DeltaTime)
 
 void AProjectile::OnHit(UPrimitiveComponent* HitComp, AActor* OtherActor, UPrimitiveComponent* OtherComp, FVector NormalImpulse, const FHitResult& Hit)
 {
-	UE_LOG(LogTemp, Display, TEXT("Hit!!"));
+	AActor* owner = GetOwner();
+	if (owner == nullptr) return;
+		
+	AController* ownerController = owner->GetInstigatorController();
+	UClass* DamageTypeClass = UDamageType::StaticClass();	//생성하지않고, 클래스만 가져오기
+
+	//유효한데, 그것이 자신이 아니고 나의 주인도 아닐경우에만...
+	if (OtherActor && OtherActor != this && OtherActor != owner)
+	{
+		UGameplayStatics::ApplyDamage(OtherActor, Damage, ownerController, this, DamageTypeClass);
+		Destroy();
+	}
 }
 
