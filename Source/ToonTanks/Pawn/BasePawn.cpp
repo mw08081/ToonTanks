@@ -5,7 +5,7 @@
 #include "Components/CapsuleComponent.h"
 #include "Components/StaticMeshComponent.h"
 #include "Kismet/GameplayStatics.h"
-#include "Projectile.h"
+#include "Actor/Projectile.h"
 
 // Sets default values
 ABasePawn::ABasePawn()
