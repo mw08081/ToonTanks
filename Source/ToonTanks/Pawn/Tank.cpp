@@ -163,7 +163,7 @@ void ATank::ControllTurret()
 	FHitResult hitResult;
 	PlayerController->GetHitResultUnderCursor(ECC_Visibility, false, hitResult);
 	if (hitResult.bBlockingHit) {
-		DrawDebugSphere(GetWorld(), hitResult.ImpactPoint, 25.f, 24, FColor::Red);
+		//DrawDebugSphere(GetWorld(), hitResult.ImpactPoint, 25.f, 24, FColor::Red);
 
 		//FVector CameraLocation = PlayerControllerRef->PlayerCameraManager->GetCameraLocation();
 		//FVector CameraForwardVector = PlayerControllerRef->PlayerCameraManager->GetCameraRotation().Vector();
