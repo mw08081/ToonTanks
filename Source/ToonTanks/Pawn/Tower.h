@@ -31,7 +31,8 @@ private:
 
 	FTimerHandle FireRateTimerHandle;
 	float FireInterval = 2.f;
-
+public:
+	void HandleDestruction();
 private:
 	bool CheckFireCondition();
 	void AimToTarget();

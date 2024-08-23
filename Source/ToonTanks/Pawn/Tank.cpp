@@ -30,20 +30,19 @@ void ATank::BeginPlay()
 {
 	Super::BeginPlay();
 
-	PlayerControllerRef = Cast<APlayerController>(GetController());
+	PlayerController = Cast<APlayerController>(GetController());
 }
 
 void ATank::Tick(float DeltaTime)
 {
-	UGameplayStatics::GetPlayerController(this, 0);
-	APlayerController* PlayerController = UGameplayStatics::GetPlayerController(GetWorld(), 0);
+	PlayerController = UGameplayStatics::GetPlayerController(GetWorld(), 0);
 
 	Super::Tick(DeltaTime);
 	if (leftCaterpillarVal != 0 || rightCaterpillarVal != 0) {
 		Moving(DeltaTime);
 	}
 
-	if (PlayerControllerRef) {
+	if (PlayerController) {
 		ControllTurret();
 	}
 }
@@ -75,6 +74,14 @@ void ATank::SetRightCaterpillarValByInput(float value)
 void ATank::SetLeftCaterpillarValByInput(float value)
 {
 	leftCaterpillarVal = value;
+}
+
+void ATank::HandleDestruction()
+{
+	Super::HandleDestruction();
+
+	SetActorHiddenInGame(true);
+	SetActorTickEnabled(false);
 }
 
 void ATank::SetPivotToTurn(bool bResetPivot, bool bLeftTurn)
@@ -154,7 +161,7 @@ void ATank::MovingRotation(float val, float dt)
 void ATank::ControllTurret()
 {
 	FHitResult hitResult;
-	PlayerControllerRef->GetHitResultUnderCursor(ECC_Visibility, false, hitResult);
+	PlayerController->GetHitResultUnderCursor(ECC_Visibility, false, hitResult);
 	if (hitResult.bBlockingHit) {
 		DrawDebugSphere(GetWorld(), hitResult.ImpactPoint, 25.f, 24, FColor::Red);
 

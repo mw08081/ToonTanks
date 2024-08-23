@@ -34,6 +34,7 @@ private:
 public:	
 	// Called every frame
 	virtual void Tick(float DeltaTime) override;
+	virtual void HandleDestruction();
 
 protected :
 	void RotateToTarget(FRotator targetLocation);

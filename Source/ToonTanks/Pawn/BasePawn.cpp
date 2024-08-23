@@ -33,6 +33,11 @@ void ABasePawn::Tick(float DeltaTime)
 	Super::Tick(DeltaTime);
 }
 
+void ABasePawn::HandleDestruction()
+{
+	// VFS SFS
+}
+
 void ABasePawn::RotateToTarget(FRotator targetLocation)
 {
 	TurretMesh->SetWorldRotation(

@@ -2,6 +2,7 @@
 
 
 #include "ActorComp/HealthComponent.h"
+#include "System/ToonTanksBaseGameMode.h"
 
 // Sets default values for this component's properties
 UHealthComponent::UHealthComponent()
@@ -39,5 +40,11 @@ void UHealthComponent::TakenDamage(AActor* DamagedActor, float Damage, const UDa
 
 	Health -= Damage;
 	UE_LOG(LogTemp, Display, TEXT("Health Comp Callback Func -> Health : %f"), Health);
+
+	if (Health <= 0)
+	{
+		AToonTanksBaseGameMode* Tt_BaseGameMode = Cast<AToonTanksBaseGameMode>(GetWorld()->GetAuthGameMode());
+		Tt_BaseGameMode->ActorDied(DamagedActor);
+	}
 }
 

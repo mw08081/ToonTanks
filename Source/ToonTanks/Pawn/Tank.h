@@ -41,9 +41,9 @@ private:
 
 //Code Variable
 public:
+	APlayerController* PlayerController;
 
 private:
-	APlayerController* PlayerControllerRef;
 
 	FVector forwardVec = FVector::ZeroVector;
 	FRotator yawRot = FRotator::ZeroRotator;
@@ -61,6 +61,8 @@ public :
 	void Turn(float value);
 	void SetRightCaterpillarValByInput(float value);
 	void SetLeftCaterpillarValByInput(float value);
+
+	void HandleDestruction();
 
 private:
 	void SetPivotToTurn(bool bResetPivot, bool bLeftTurn);
