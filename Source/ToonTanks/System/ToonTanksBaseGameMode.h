@@ -22,10 +22,15 @@ protected:
 public:
 private:
 	class ATank* Tank;
+	class AToonTanksPlayerController* ToonTanksPlayerController;
+
+public:
+private:
+	float StartDelay = 3.f;
 
 public:
 	void ActorDied(AActor* DeadActor);
 private:
-
+	void HandleGameStart();
 	
 };
